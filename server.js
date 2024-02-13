@@ -41,8 +41,11 @@ app.get("/todo/:name", (req, res) => {
     })
 })
 
+//Routes
 app.use('/api', require("./routes/api"))
-app.post('/api/todo', TodosCtrl.addTodo);
+// app.post('/api/todo', TodosCtrl.addTodo);
+// app.delete('/api/todo/:id', TodosCtrl.deleteTodoById)
+// app.put('/api/todo/:id', TodosCtrl.updateTodoById)
 
 app.listen(3003, () => {
     console.log(`Server started @ http://localhost:3003`)

@@ -1,7 +1,7 @@
 const Todos = require("../models/todos")
 
 
-exports.getAllTodos = (req, res) => {
+module.exports.getAllTodos = (req, res) => {
     
     Todos.find().then(function(todos, err){
         if(err) {
@@ -17,7 +17,7 @@ exports.getAllTodos = (req, res) => {
 
 }
 
-exports.getTodoById = async (req, res) => {
+module.exports.getTodoById = async (req, res) => {
     try {
         const id = req.params.id;
         // Use await to asynchronously wait for the result of findById
@@ -39,10 +39,10 @@ exports.getTodoById = async (req, res) => {
     }
 }
 
-exports.addTodo = async (req, res) => {
+module.exports.addTodo = async (req, res) => {
     try {
         // Create a new todo item based on the request body
-        const newTodo = new Todo(req.body);
+        const newTodo = new Todos(req.body);
         // Save the todo item to the database
         await newTodo.save();
         // Respond with a success message
@@ -51,4 +51,38 @@ exports.addTodo = async (req, res) => {
         // If an error occurs, respond with an error message
         res.status(500).json({ error: err.message });
     }
-};
+}
+
+module.exports.deleteTodoById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        // Find the todo item by ID and delete it
+        const deletedTodo = await Todos.findByIdAndDelete(id);
+        if (!deletedTodo) {
+            // If the todo with the given ID is not found, respond with a 404 status code
+            return res.status(404).json({ error: 'Todo not found' });
+        }
+        // Respond with a success message
+        res.status(200).json({ message: 'Todo item deleted successfully', deletedTodo });
+    } catch (err) {
+        // If an error occurs, respond with an error message
+        res.status(500).json({ error: err.message });
+    }
+}
+
+module.exports.updateTodoById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        // Find the todo item by ID and update it
+        const updatedTodo = await Todos.findByIdAndUpdate(id, req.body, { new: true });
+        if (!updatedTodo) {
+            // If the todo with the given ID is not found, respond with a 404 status code
+            return res.status(404).json({ error: 'Todo not found' });
+        }
+        // Respond with a success message
+        res.status(200).json({ message: 'Todo item updated successfully', updatedTodo });
+    } catch (err) {
+        // If an error occurs, respond with an error message
+        res.status(500).json({ error: err.message });
+    }
+}
